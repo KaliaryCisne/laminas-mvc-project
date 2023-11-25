@@ -1,7 +1,26 @@
-laminas:
-  build: .
-  dockerfile: Dockerfile
-  ports:
-   - "8080:80"
-  volumes:
-   - .:/var/www
+services:
+  laminas:
+    container_name: laminas_application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+     - "8080:80"
+    volumes:
+     - .:/var/www
+    depends_on:
+      - pgsql
+  pgsql:
+    container_name: laminas_database
+    image: 'postgres:16-alpine'
+    ports:
+      - '5499:5432'
+    env_file: .env
+    environment:
+        PGPASSWORD: '${DB_PASS}'
+        POSTGRES_DB: '${DB_NAME}'
+        POSTGRES_USER: '${DB_USER}'
+        POSTGRES_PASSWORD: '${DB_PASS}'
+    volumes:
+      - ./create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
