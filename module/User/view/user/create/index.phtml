@@ -1,2 +1,17 @@
 <?php
-echo "create";
+$title = 'Cadastrar usuário';
+$this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath('/module/user/css/user.css'));
+
+?>
+<h1><?=$this->escapeHtml($title)?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url(
+    'user',
+    [
+        'action' =>	'save',
+        'controller' =>	'create'
+    ]));
+$form->prepare();
+echo $this->form($form);

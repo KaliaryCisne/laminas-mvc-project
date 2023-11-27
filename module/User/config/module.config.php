@@ -7,9 +7,10 @@ namespace User;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Router\Http\Segment;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\Session\SessionManager;
 use User\Model\User;
 use User\Model\UserTable;
+use User\Validator\UniqueEmailValidator;
 
 return [
     'router' => [
@@ -17,7 +18,7 @@ return [
             'user' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/user[/:controller[/:action]]',
+                    'route'    => '/user[/:controller[/:action[/:key]]]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
@@ -34,14 +35,28 @@ return [
             'update' => Controller\UpdateController::class,
         ],
         'factories' => [
-            Controller\CreateController::class => InvokableFactory::class,
-            Controller\DeleteController::class => InvokableFactory::class,
+            Controller\CreateController::class => function($sm) {
+                $table = $sm->get(UserTable::class);
+                $sessionManager = new SessionManager();
+                return new Controller\CreateController($table, $sessionManager);
+            },
+            Controller\DeleteController::class => function($sm) {
+                $table = $sm->get(UserTable::class);
+                return new Controller\DeleteController($table);
+            },
             Controller\IndexController::class  => function($sm) {
                 $table = $sm->get(UserTable::class);
                 return new Controller\IndexController($table);
             },
-            Controller\SearchController::class => InvokableFactory::class,
-            Controller\UpdateController::class => InvokableFactory::class,
+            Controller\SearchController::class => function($sm) {
+                $table = $sm->get(UserTable::class);
+                return new Controller\SearchController($table);
+            },
+            Controller\UpdateController::class => function($sm) {
+                $table = $sm->get(UserTable::class);
+                $sesionManager = new SessionManager();
+                return new Controller\UpdateController($table, $sesionManager);
+            },
         ],
     ],
     'view_manager' => [
@@ -64,7 +79,7 @@ return [
         'factories' => [
             UserTable::class => function($sm) {
                 $tableGateway = $sm->get('UserTableGateway');
-                $table  = new UserTable($tableGateway);
+                $table = new UserTable($tableGateway);
                 return $table;
             },
             'UserTableGateway' => function($sm) {
@@ -75,4 +90,13 @@ return [
             }
         ],
     ],
+//    'validators' => [
+//        'factories' => [
+//            UniqueEmailValidator::class => function ($sm) {
+//                $tableGateway = $sm->get('UserTableGateway');
+//                $table  = new UserTable($tableGateway);
+//                return new UniqueEmailValidator($table);
+//            }
+//        ]
+//    ]
 ];

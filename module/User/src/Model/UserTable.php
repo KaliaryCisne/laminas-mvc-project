@@ -65,8 +65,7 @@ class UserTable
         ];
 
         $id = $user->id;
-        if (empty($this->getModel($id)->id)) {
-            $data['id'] = $id;
+        if (empty($id)) {
             $this->tableGateway->insert($data);
         } else {
             $this->tableGateway->update($data, [
@@ -83,5 +82,12 @@ class UserTable
         $this->tableGateway->delete([
             $this->keyName => $keyValue
         ]);
+    }
+
+    public function emailExists($email)
+    {
+        $rowset = $this->tableGateway->select(['email' => $email]);
+        $row = $rowset->current();
+        return $row ? true : false;
     }
 }

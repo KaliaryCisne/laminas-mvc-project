@@ -7,10 +7,10 @@ $this->headLink()->appendStylesheet($this->basePath('/module/user/css/user.css')
 <h1><?=$this->escapeHtml($title)?></h1>
 <?php
 $form = $this->form;
-$form->setAttribute('action',	$this->url(
+$form->setAttribute('action', $this->url(
     'user',
     [
-        'action' =>	'index',
+        'action' =>	'save',
         'controller' =>	'update'
     ]));
 $form->prepare();

@@ -2,15 +2,15 @@
 
 namespace User\Model;
 
-use Laminas\Filter\Digits;
-use Laminas\Filter\ToInt;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\ServiceManager\ServiceManager;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\Factory;
 use Laminas\Validator\EmailAddress;
-use Laminas\Validator\NotEmpty;
-use Laminas\Validator\StringLength;
-use PHPUnit\Util\Filter;
+use Laminas\Validator\Regex;
+use Laminas\Validator\ValidatorChain;
+use User\Validator\UniqueEmailValidator;
 
 class User
 {
@@ -54,11 +54,16 @@ class User
      *
      *	@return	\Laminas\InputFilter\InputFilterInterface
      */
-    public function getInputFilter()
+    public function getInputFilter(UserTable $userTable)
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory = new Factory();
+
+            $inputFilter->add($factory->createInput([
+                'name' => 'id',
+                'required' => false,
+            ]));
 
             $inputFilter->add($factory->createInput([
                 'name' => 'name',
@@ -96,11 +101,17 @@ class User
                         'name' => EmailAddress::class,
                         'options' => [
                             'encoding' => 'UTF-8',
-                            'min' => '2',
-                            'max' => '100'
-                        ]
-                    ]
-                ]
+                            'min' => 2,
+                            'max' => 100,
+                        ],
+                    ],
+                    [
+                        'name' => UniqueEmailValidator::class,
+                        'options' => [
+                            'userTable' => $userTable
+                        ],
+                    ],
+                ],
             ]));
 
             $inputFilter->add($factory->createInput([
@@ -110,24 +121,17 @@ class User
                     [
                         'name' => 'StringTrim'
                     ],
-                    [
-                        'name' => ToInt::class
-                    ],
                 ],
                 'validators' => [
                     [
-                        'name' => NotEmpty::class,
-                    ],
-                    [
-                        'name' => StringLength::class,
+                        'name' => Regex::class,
                         'options' => [
-                            'min' => '6',
-                            'max' => '10'
-                        ]
+                            'pattern' => '/^\d{6,10}$/',
+                            'messages' => [
+                                Regex::NOT_MATCH => 'A senha deve conter entre 6 e 10 dígitos numéricos.'
+                            ],
+                        ],
                     ],
-                    [
-                        'name' => Digits::class
-                    ]
                 ]
             ]));
 
@@ -135,5 +139,15 @@ class User
         }
 
         return  $this->inputFilter;
+    }
+
+    public function getArrayCopy()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password
+        ];
     }
 }

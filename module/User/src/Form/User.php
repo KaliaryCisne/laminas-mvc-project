@@ -7,10 +7,21 @@ use Laminas\Form\Form;
 
 class User extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('user');
         $this->setAttribute('method', 'post');
+
+        $this->add([
+            'name' => 'id',
+            'attributes' => [
+                'type' => 'hidden',
+                'class' => 'form-control'
+            ],
+            'options' => [
+                'label' => 'Id'
+            ]
+        ]);
 
         $this->add([
             'name' => 'name',
@@ -50,7 +61,7 @@ class User extends Form
             'name' => 'submit',
             'attributes' => [
                 'type'  => 'submit',
-                'value' => 'Gravar',
+                'value' => 'Salvar',
                 'id'    => 'submitbutton'
             ],
         ]);
