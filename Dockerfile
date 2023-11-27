@@ -21,9 +21,6 @@ RUN apt-get install --yes libicu-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
-## mbstring for i18n string support
-#RUN docker-php-ext-install mbstring
-
 ## PostgreSQL PDO support
 RUN apt-get install --yes libpq-dev \
  && docker-php-ext-install pdo_pgsql

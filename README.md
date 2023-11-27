@@ -3,6 +3,13 @@
 
 Simples CRUD usando Laminas MVC
 
+## Requerimentos
+
+* PHP 7.4
+* Docker
+* Docker Compose
+* GIT
+* Composer
 
 ##  Configuração
 
@@ -23,6 +30,12 @@ Simples CRUD usando Laminas MVC
 ```bash
   cp .env.example .env
 ```
+
+4. Instalar dependencias
+```bash
+  composer install
+```
+
 ## Executando o projeto
 
 Para executar o projeto rode o seguinte comando:
