@@ -90,13 +90,4 @@ return [
             }
         ],
     ],
-//    'validators' => [
-//        'factories' => [
-//            UniqueEmailValidator::class => function ($sm) {
-//                $tableGateway = $sm->get('UserTableGateway');
-//                $table  = new UserTable($tableGateway);
-//                return new UniqueEmailValidator($table);
-//            }
-//        ]
-//    ]
 ];

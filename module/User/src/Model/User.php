@@ -2,14 +2,11 @@
 
 namespace User\Model;
 
-use Laminas\Db\TableGateway\TableGateway;
-use Laminas\ServiceManager\ServiceManager;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\Factory;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\Regex;
-use Laminas\Validator\ValidatorChain;
 use User\Validator\UniqueEmailValidator;
 
 class User
