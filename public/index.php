@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Laminas\Mvc\Application;
 use Laminas\Stdlib\ArrayUtils;
+use Dotenv\Dotenv;
 
 /**
  * This makes our life easier when dealing with paths. Everything is relative
@@ -22,6 +23,10 @@ if (php_sapi_name() === 'cli-server') {
 
 // Composer autoloading
 include __DIR__ . '/../vendor/autoload.php';
+
+// Carregar o arquivo .env
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
 
 if (! class_exists(Application::class)) {
     throw new RuntimeException(
