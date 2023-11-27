@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace User;
 
-use Laminas\Router\Http\Literal;
+use Laminas\Db\ResultSet\ResultSet;
+use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use User\Model\User;
+use User\Model\UserTable;
 
 return [
     'router' => [
@@ -33,7 +36,10 @@ return [
         'factories' => [
             Controller\CreateController::class => InvokableFactory::class,
             Controller\DeleteController::class => InvokableFactory::class,
-            Controller\IndexController::class  => InvokableFactory::class,
+            Controller\IndexController::class  => function($sm) {
+                $table = $sm->get(UserTable::class);
+                return new Controller\IndexController($table);
+            },
             Controller\SearchController::class => InvokableFactory::class,
             Controller\UpdateController::class => InvokableFactory::class,
         ],
@@ -52,6 +58,21 @@ return [
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
+            UserTable::class => function($sm) {
+                $tableGateway = $sm->get('UserTableGateway');
+                $table  = new UserTable($tableGateway);
+                return $table;
+            },
+            'UserTableGateway' => function($sm) {
+                $dbAdapter = $sm->get('Laminas\Db\Adapter');
+                $resultSetPrototype = new ResultSet();
+                $resultSetPrototype->setArrayObjectPrototype(new User());
+                return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
+            }
         ],
     ],
 ];

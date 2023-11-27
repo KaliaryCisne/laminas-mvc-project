@@ -1,2 +1,46 @@
 <?php
-echo "index";
+$title = "Usuários ";
+$this->headTitle($title);
+?>
+<h1><?=$this->escapeHtml($title)?></h1>
+<p>
+    <a href="<?= $this->url(
+        'user',
+        [
+            'action' => 'index',
+            'controller' => 'update'
+        ])
+        ?>">Novo usuário</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach ($this->models as $model):?>
+        <tr>
+            <td><?=$model->id?></td>
+            <td><?=$this->escapeHtml($model->name)?></td>
+            <td><?=$this->escapeHtml($model->email)?></td>
+            <td>
+                <a href="<?=$this->url('user',
+                    array(
+                        'action'=>'index',
+                        'controller'=>'update',
+                        'key' => $model->id
+                    )
+                )?>">Editar</a>
+                <a href="<?=$this->url('user',
+                    array(
+                        'action'=>'index',
+                        'controller'=>'delete',
+                        'key' => $model->id
+                    )
+                )?>">Remover</a>
+            </td>
+        </tr>
+    <?php endforeach ?>
+</table>
