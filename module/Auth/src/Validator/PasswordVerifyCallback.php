@@ -1,16 +1,15 @@
 <?php
 
-namespace User\Validator;
+namespace Application\Validator;
 
 use Laminas\Validator\AbstractValidator;
-use User\Model\UserTable;
 
-class UniqueEmailValidator extends AbstractValidator
+class PasswordVerifyCallback extends AbstractValidator
 {
-    public const EMAIL_EXISTS = 'emailExists';
+    const INVALID = 'invalid';
 
     protected $messageTemplates = [
-        self::EMAIL_EXISTS => "Este e-mail já está em uso.",
+        self::INVALID => 'Senha inválida.',
     ];
 
     protected $userTable;
@@ -24,10 +23,11 @@ class UniqueEmailValidator extends AbstractValidator
     public function isValid($value)
     {
         $this->setValue($value);
-        if ($this->userTable->emailExists($value)) {
-            $this->error(self::EMAIL_EXISTS);
+        if ($this->userTable->passwordVerify($value)) {
+            $this->error(self::INVALID);
             return false;
         }
         return true;
     }
+
 }

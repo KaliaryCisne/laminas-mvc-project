@@ -1,0 +1,11 @@
+<?php
+$title = 'Login';
+$this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath('/module/auth/css/user.css'));
+
+?>
+<h1><?=$this->escapeHtml($title)?></h1>
+<?php
+$form = $this->form;
+$form->prepare();
+echo $this->form($form);

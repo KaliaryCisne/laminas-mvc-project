@@ -17,16 +17,19 @@
         "laminas/laminas-mvc": "^3.1.1",
         "laminas/laminas-mvc-i18n":	"^1.1",
         "laminas/laminas-test":	"^3.4",
-        "laminas/laminas-db": "^2.11",
+        "laminas/laminas-db": "^2.15",
         "ext-pdo": "*",
         "laminas/laminas-form": "^2.15",
         "vlucas/phpdotenv": "^5.6",
-        "laminas/laminas-session": "^2.9"
+        "laminas/laminas-session": "^2.13",
+        "laminas/laminas-authentication": "^2.12",
+        "laminas/laminas-mvc-plugin-flashmessenger": "^1.8"
     },
     "autoload": {
         "psr-4": {
             "Application\\": "module/Application/src/",
-            "User\\": "module/User/src/"
+            "User\\": "module/User/src/",
+            "Auth\\": "module/Auth/src/"
         }
     },
     "autoload-dev": {

@@ -4,21 +4,13 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
+
 use Laminas\Session\Container as SessionContainer;
 use User\Form\User as UserForm;
 use User\Model\User;
 
-class CreateController extends AbstractActionController
+class CreateController extends BaseController
 {
-    private $table;
-
-    public function __construct($table, $sessionManager)
-    {
-        $this->table = $table;
-        $sessionManager->start();
-    }
-
     public function indexAction()
     {
         $user = $this->table->getModel(null);

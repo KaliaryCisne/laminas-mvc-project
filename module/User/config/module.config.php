@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace User;
 
+
+use Application\Controller\IndexController;
+use Auth\Service\AuthService;
+use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as DbTableAuthAdapter;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Router\Http\Segment;
 use Laminas\Session\SessionManager;
 use User\Model\User;
 use User\Model\UserTable;
-use User\Validator\UniqueEmailValidator;
 
 return [
     'router' => [
@@ -38,24 +41,37 @@ return [
             Controller\CreateController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
                 $sessionManager = new SessionManager();
-                return new Controller\CreateController($table, $sessionManager);
+                $authAdapter = $sm->get(DbTableAuthAdapter::class);
+                $authService = new AuthService($authAdapter);
+                return new Controller\CreateController($table, $sessionManager, $authService);
             },
             Controller\DeleteController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
-                return new Controller\DeleteController($table);
+                $sessionManager = new SessionManager();
+                $authAdapter = $sm->get(DbTableAuthAdapter::class);
+                $authService = new AuthService($authAdapter);
+                return new Controller\DeleteController($table, $sessionManager, $authService);
             },
             Controller\IndexController::class  => function($sm) {
                 $table = $sm->get(UserTable::class);
-                return new Controller\IndexController($table);
+                $sessionManager = new SessionManager();
+                $authAdapter = $sm->get(DbTableAuthAdapter::class);
+                $authService = new AuthService($authAdapter);
+                return new Controller\IndexController($table, $sessionManager, $authService);
             },
             Controller\SearchController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
-                return new Controller\SearchController($table);
+                $sesionManager = new SessionManager();
+                $authAdapter = $sm->get(DbTableAuthAdapter::class);
+                $authService = new AuthService($authAdapter);
+                return new Controller\SearchController($table, $sesionManager, $authService);
             },
             Controller\UpdateController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
                 $sesionManager = new SessionManager();
-                return new Controller\UpdateController($table, $sesionManager);
+                $authAdapter = $sm->get(DbTableAuthAdapter::class);
+                $authService = new AuthService($authAdapter);
+                return new Controller\UpdateController($table, $sesionManager, $authService);
             },
         ],
     ],
@@ -90,4 +106,5 @@ return [
             }
         ],
     ],
+
 ];

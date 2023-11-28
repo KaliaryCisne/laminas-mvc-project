@@ -13,4 +13,12 @@ class IndexController extends AbstractActionController
     {
         return new ViewModel();
     }
+
+    public function forbiddenAction()
+    {
+        //todo: melhorar essa implementação
+        $viewModel = new ViewModel();
+        $viewModel->setTemplate('error/403');
+        return $viewModel;
+    }
 }

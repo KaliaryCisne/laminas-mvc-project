@@ -5,21 +5,13 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Session\Container as SessionContainer;
 use User\Form\User as UserForm;
 use User\Model\User;
-use Laminas\Session\Container as SessionContainer;
 use User\Model\UserTable;
 
-class UpdateController extends AbstractActionController
+class UpdateController extends BaseController
 {
-    private $table;
-
-    public function __construct(UserTable $table, $sessionManager)
-    {
-        $this->table = $table;
-        $sessionManager->start();
-    }
-
     public function indexAction()
     {
         $id = $this->params()->fromRoute('key');

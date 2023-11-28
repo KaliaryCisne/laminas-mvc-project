@@ -26,9 +26,8 @@ class User extends Form
         $this->add([
             'name' => 'name',
             'attributes' => [
-                'type' => 'text',
                 'autofocus' => 'autofocus',
-                'class' => 'form-control'
+                'class' => 'form-control col-6'
             ],
             'options' => [
                 'label' => 'Nome'
@@ -37,9 +36,9 @@ class User extends Form
 
         $this->add([
             'name' => 'email',
+            'type' => Element\Email::class,
             'attributes' => [
-                'type' => Element\Email::class,
-                'class' => 'form-control'
+                'class' => 'form-control col-6'
             ],
             'options' => [
                 'label' => 'E-mail'
@@ -48,9 +47,9 @@ class User extends Form
 
         $this->add([
             'name' => 'password',
+//            'type' => Element\Password::class,
             'attributes' => [
-                'type' => Element\Password::class,
-                'class' => 'form-control'
+                'class' => 'form-control col-6'
             ],
             'options' => [
                 'label' => 'Senha'
@@ -62,7 +61,8 @@ class User extends Form
             'attributes' => [
                 'type'  => 'submit',
                 'value' => 'Salvar',
-                'id'    => 'submitbutton'
+                'id'    => 'submitbutton',
+                'class' => 'form-control col-6 btn btn-primary'
             ],
         ]);
     }

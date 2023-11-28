@@ -8,15 +8,21 @@ use Auth\Service\AuthService;
 use Laminas\Http\Response;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
-use Laminas\View\Model\ViewModel;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Session\Container as SessionContainer;
+use Laminas\Session\SessionManager;
+use User\Form\User as UserForm;
+use User\Model\User;
+use User\Model\UserTable;
 
-class IndexController extends AbstractActionController
+class BaseController extends AbstractActionController
 {
-    private $table;
 
-    private $authService;
+    protected $authService;
 
-    public function __construct($table, $sessionManager, AuthService $authService)
+    protected $table;
+
+    public function __construct(UserTable $table, SessionManager $sessionManager, AuthService $authService)
     {
         $this->table = $table;
         $this->authService = $authService;
@@ -32,10 +38,4 @@ class IndexController extends AbstractActionController
         return parent::onDispatch($event);
     }
 
-    public function indexAction()
-    {
-        return new ViewModel([
-            'models' => $this->table->fetchAll()
-        ]);
-    }
 }
