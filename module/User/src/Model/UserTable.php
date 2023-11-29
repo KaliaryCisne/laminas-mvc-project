@@ -73,12 +73,16 @@ class UserTable
      */
     public function saveModel(User $user)
     {
-        $user->password = password_hash($user->password, PASSWORD_BCRYPT);
         $data = [
             'name' => $user->name,
             'email' => $user->email,
-            'password' => $user->password
+//            'password' => $user->password
         ];
+
+
+        if (!empty($user->password)) {
+            $data['password'] = password_hash($user->password, PASSWORD_BCRYPT);
+        }
 
         $id = $user->id;
         if (empty($id)) {
