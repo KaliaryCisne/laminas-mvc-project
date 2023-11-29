@@ -5,6 +5,7 @@ namespace Auth\Controller;
 use Auth\Form\LoginForm;
 use Auth\Service\AuthService;
 use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Session\Container as SessionContainer;
 use Laminas\View\Model\ViewModel;
 
 class LoginController extends AbstractActionController
@@ -34,11 +35,9 @@ class LoginController extends AbstractActionController
                 $data = $this->form->getData();
                 $result = $this->authService->auth($data['email'], $data['password']);
 
-                if ($result->isValid()) {
+                if (!is_null($result) && $result->isValid()) {
                     return $this->redirect()->toRoute('home');
                 }
-
-                $this->form->setMessages(['Credenciais invalidas.']);
             }
         }
 

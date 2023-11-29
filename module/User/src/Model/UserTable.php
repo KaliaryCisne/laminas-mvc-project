@@ -76,7 +76,6 @@ class UserTable
         $data = [
             'name' => $user->name,
             'email' => $user->email,
-//            'password' => $user->password
         ];
 
 
