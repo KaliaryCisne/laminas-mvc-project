@@ -4,8 +4,6 @@ namespace User\Form;
 
 use Laminas\Form\Element;
 use Laminas\Form\Form;
-use User\Model\UserTable;
-use User\Validator\UniqueEmailValidator;
 
 class UserForm extends Form
 {
@@ -54,7 +52,7 @@ class UserForm extends Form
             ],
             'options' => [
                 'label' => 'Senha'
-            ]
+            ],
         ]);
 
         $this->add([

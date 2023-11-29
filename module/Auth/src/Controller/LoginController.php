@@ -6,7 +6,6 @@ use Auth\Form\LoginForm;
 use Auth\Service\AuthService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use User\Model\UserTable;
 
 class LoginController extends AbstractActionController
 {
@@ -33,7 +32,6 @@ class LoginController extends AbstractActionController
 
             if ($this->form->isValid()) {
                 $data = $this->form->getData();
-
                 $result = $this->authService->auth($data['email'], $data['password']);
 
                 if ($result->isValid()) {

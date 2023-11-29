@@ -6,7 +6,9 @@ use Laminas\InputFilter\InputFilterInterface;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\Factory;
 use Laminas\Validator\EmailAddress;
+use Laminas\Validator\NotEmpty;
 use Laminas\Validator\Regex;
+use Laminas\Validator\StringLength;
 use User\Validator\UniqueEmailValidator;
 
 class User
@@ -56,6 +58,7 @@ class User
 
         $emailNew = !is_null($post) ? $post['email'] : null;
         $emailOld = !is_null($userOld) ? $userOld->email : null;
+        $passwordNew = !is_null($post) ? $post['password'] : null;
 
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
@@ -83,9 +86,21 @@ class User
                         'options' => [
                             'encoding' => 'UTF-8',
                             'min' => '2',
-                            'max' => '100'
+                            'max' => '100',
+                            'messages' => [
+                                StringLength::TOO_SHORT => 'Nome precisa conter entre 2 e 100 caracteres',
+                                StringLength::TOO_LONG => 'Nome precisa conter entre 2 e 100 caracteres'
+                            ]
                         ]
-                    ]
+                    ],
+                    [
+                        'name' => NotEmpty::class,
+                        'options' => [
+                            'messages' => [
+                                NotEmpty::IS_EMPTY => 'Nome não pode ser vazio'
+                            ],
+                        ],
+                    ],
                 ]
             ]));
 
@@ -97,59 +112,18 @@ class User
                         'name' => 'StringTrim'
                     ]
                 ],
-                'validators' => ($emailOld !== $emailNew) || is_null($emailOld)  ? [
-                    [
-                        'name' => UniqueEmailValidator::class,
-                        'options' => [
-                            'userTable' => $userTable
-                        ]
-                    ],
-                    [
-                        'name' => EmailAddress::class,
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min' => 2,
-                            'max' => 100,
-                        ],
-                    ],
-                ] : []
-//                'validators' => [
-//                    [
-//                        'name' => EmailAddress::class,
-//                        'options' => [
-//                            'encoding' => 'UTF-8',
-//                            'min' => 2,
-//                            'max' => 100,
-//                        ],
-//                    ],
-//                    [
-//                        'name' => UniqueEmailValidator::class,
-//                        'options' => [
-//                            'userTable' => $userTable
-//                        ],
-//                    ],
-//                ],
+                'validators' => $this->getRuleEmail($emailOld, $emailNew, $userTable)
             ]));
 
             $inputFilter->add($factory->createInput([
                 'name' => 'password',
-                'required' => true,
+                'required' => is_null($emailOld),
                 'filters' => [
                     [
                         'name' => 'StringTrim'
                     ],
                 ],
-                'validators' => [
-                    [
-                        'name' => Regex::class,
-                        'options' => [
-                            'pattern' => '/^\d{6,10}$/',
-                            'messages' => [
-                                Regex::NOT_MATCH => 'A senha deve conter entre 6 e 10 dígitos numéricos.'
-                            ],
-                        ],
-                    ],
-                ]
+                'validators' => $this->getRulePassword($passwordNew, $emailOld)
             ]));
 
             $this->inputFilter = $inputFilter;
@@ -167,4 +141,92 @@ class User
             'password' => $this->password
         ];
     }
+
+    private function getRulePassword($passwordNew, $emailOld)
+    {
+        // senha preenchida e edicao
+        if (!empty($passwordNew) && !is_null($emailOld)) {
+            return [
+                [
+                    'name' => Regex::class,
+                    'options' => [
+                        'pattern' => '/^\d{6,10}$/',
+                        'messages' => [
+                            Regex::NOT_MATCH => 'A senha deve conter entre 6 e 10 dígitos numéricos.'
+                        ],
+                    ],
+                ],
+                [
+                    'name' => NotEmpty::class,
+                    'options' => [
+                        'messages' => [
+                            NotEmpty::IS_EMPTY => 'A senha deve conter entre 6 e 10 dígitos numéricos.'
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        // criacao
+        if (is_null($emailOld)) {
+            return [
+                [
+                    'name' => Regex::class,
+                    'options' => [
+                        'pattern' => '/^\d{6,10}$/',
+                        'messages' => [
+                            Regex::NOT_MATCH => 'A senha deve conter entre 6 e 10 dígitos numéricos.'
+                        ],
+                    ],
+                ],
+                [
+                    'name' => NotEmpty::class,
+                    'options' => [
+                        'messages' => [
+                            NotEmpty::IS_EMPTY => 'A senha deve conter entre 6 e 10 dígitos numéricos.'
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        return [];
+    }
+
+    private function getRuleEmail($emailOld, $emailNew, $userTable)
+    {
+        // Alterou o email ou é uma criação de usuário
+       if ($emailOld !== $emailNew || is_null($emailOld)  ) {
+            return [
+                [
+                    'name' => UniqueEmailValidator::class,
+                    'options' => [
+                        'userTable' => $userTable
+                    ]
+                ],
+                [
+                    'name' => EmailAddress::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 2,
+                        'max' => 100,
+                        'messages' => [
+                            EmailAddress::INVALID_FORMAT => 'O email precisa ser válido. Ex: email@email.com'
+                        ],
+                    ],
+                ],
+                [
+                    'name' => NotEmpty::class,
+                    'options' => [
+                        'messages' => [
+                            NotEmpty::IS_EMPTY => 'Email é necessário.'
+                        ],
+                    ]
+                ]
+            ];
+       }  else {
+           return [];
+       }
+    }
+
 }

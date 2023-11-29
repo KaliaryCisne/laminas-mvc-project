@@ -37,6 +37,7 @@ class UpdateController extends BaseController
             $form = new UserForm();
             $form->setData($post);
             $user = new User();
+
             $form->setInputFilter($user->getInputFilter($this->table, $post, $userOld));
             if (!$form->isValid()) {
                 $sessionContainer = new SessionContainer();
