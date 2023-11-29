@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Session\Container as SessionContainer;
-use User\Form\User as UserForm;
+use User\Form\UserForm as UserForm;
 use User\Model\User;
-use User\Model\UserTable;
 
 class UpdateController extends BaseController
 {
     public function indexAction()
     {
         $id = $this->params()->fromRoute('key');
-        $user = $this->table->getModel($id);
+        $user = $this->table->getModelById($id);
+        $user->password = '';
         $form = new UserForm();
         $form->get('submit')->setValue('Salvar');
         $sessionContainer = new SessionContainer();
@@ -33,11 +32,12 @@ class UpdateController extends BaseController
     {
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form = new UserForm();
-            $user = new User();
-            $form->setInputFilter($user->getInputFilter($this->table));
             $post = $request->getPost();
+            $userOld = $this->table->getModelById($post['id']);
+            $form = new UserForm();
             $form->setData($post);
+            $user = new User();
+            $form->setInputFilter($user->getInputFilter($this->table, $post, $userOld));
             if (!$form->isValid()) {
                 $sessionContainer = new SessionContainer();
                 $sessionContainer->model = $post;

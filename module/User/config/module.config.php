@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace User;
 
 
-use Application\Controller\IndexController;
 use Auth\Service\AuthService;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as DbTableAuthAdapter;
 use Laminas\Db\ResultSet\ResultSet;
@@ -41,22 +40,19 @@ return [
             Controller\CreateController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
                 $sessionManager = new SessionManager();
-                $authAdapter = $sm->get(DbTableAuthAdapter::class);
-                $authService = new AuthService($authAdapter);
+                $authService = $sm->get(AuthService::class);
                 return new Controller\CreateController($table, $sessionManager, $authService);
             },
             Controller\DeleteController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
                 $sessionManager = new SessionManager();
-                $authAdapter = $sm->get(DbTableAuthAdapter::class);
-                $authService = new AuthService($authAdapter);
+                $authService = $sm->get(AuthService::class);
                 return new Controller\DeleteController($table, $sessionManager, $authService);
             },
             Controller\IndexController::class  => function($sm) {
                 $table = $sm->get(UserTable::class);
                 $sessionManager = new SessionManager();
-                $authAdapter = $sm->get(DbTableAuthAdapter::class);
-                $authService = new AuthService($authAdapter);
+                $authService = $sm->get(AuthService::class);
                 return new Controller\IndexController($table, $sessionManager, $authService);
             },
             Controller\SearchController::class => function($sm) {
@@ -69,8 +65,7 @@ return [
             Controller\UpdateController::class => function($sm) {
                 $table = $sm->get(UserTable::class);
                 $sesionManager = new SessionManager();
-                $authAdapter = $sm->get(DbTableAuthAdapter::class);
-                $authService = new AuthService($authAdapter);
+                $authService = $sm->get(AuthService::class);
                 return new Controller\UpdateController($table, $sesionManager, $authService);
             },
         ],

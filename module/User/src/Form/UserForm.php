@@ -4,8 +4,10 @@ namespace User\Form;
 
 use Laminas\Form\Element;
 use Laminas\Form\Form;
+use User\Model\UserTable;
+use User\Validator\UniqueEmailValidator;
 
-class User extends Form
+class UserForm extends Form
 {
     public function __construct()
     {
@@ -42,12 +44,11 @@ class User extends Form
             ],
             'options' => [
                 'label' => 'E-mail'
-            ]
+            ],
         ]);
 
         $this->add([
             'name' => 'password',
-//            'type' => Element\Password::class,
             'attributes' => [
                 'class' => 'form-control col-6'
             ],

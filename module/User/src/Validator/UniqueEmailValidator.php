@@ -23,7 +23,6 @@ class UniqueEmailValidator extends AbstractValidator
 
     public function isValid($value)
     {
-        $this->setValue($value);
         if ($this->userTable->emailExists($value)) {
             $this->error(self::EMAIL_EXISTS);
             return false;

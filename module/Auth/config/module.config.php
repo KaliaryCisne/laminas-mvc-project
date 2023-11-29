@@ -8,6 +8,7 @@ use Auth\Form\LoginForm;
 use Auth\Service\AuthService;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as DbTableAuthAdapter;
 use Laminas\Router\Http\Literal;
+use User\Model\UserTable;
 
 return [
     'router' => [
@@ -51,7 +52,8 @@ return [
         'factories' => [
             AuthService::class => function ($sm) {
                 $authAdapter = $sm->get(DbTableAuthAdapter::class);
-                return new AuthService($authAdapter);
+                $userTable = $sm->get(UserTable::class);
+                return new AuthService($authAdapter, $userTable);
             },
             DbTableAuthAdapter::class => function ($sm) {
                 $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
@@ -60,9 +62,6 @@ return [
                     'users',
                     'email',
                     'password'
-//                    function ($hash, $senha) {
-//                        return password_verify($senha, $hash);
-//                    }
                 );
                 return $dbTableAuthAdapter;
             },

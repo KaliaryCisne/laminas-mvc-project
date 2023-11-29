@@ -51,8 +51,12 @@ class User
      *
      *	@return	\Laminas\InputFilter\InputFilterInterface
      */
-    public function getInputFilter(UserTable $userTable)
+    public function getInputFilter(UserTable $userTable, $post = null, $userOld = null)
     {
+
+        $emailNew = !is_null($post) ? $post['email'] : null;
+        $emailOld = !is_null($userOld) ? $userOld->email : null;
+
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory = new Factory();
@@ -93,7 +97,13 @@ class User
                         'name' => 'StringTrim'
                     ]
                 ],
-                'validators' => [
+                'validators' => ($emailOld !== $emailNew) || is_null($emailOld)  ? [
+                    [
+                        'name' => UniqueEmailValidator::class,
+                        'options' => [
+                            'userTable' => $userTable
+                        ]
+                    ],
                     [
                         'name' => EmailAddress::class,
                         'options' => [
@@ -102,13 +112,23 @@ class User
                             'max' => 100,
                         ],
                     ],
-                    [
-                        'name' => UniqueEmailValidator::class,
-                        'options' => [
-                            'userTable' => $userTable
-                        ],
-                    ],
-                ],
+                ] : []
+//                'validators' => [
+//                    [
+//                        'name' => EmailAddress::class,
+//                        'options' => [
+//                            'encoding' => 'UTF-8',
+//                            'min' => 2,
+//                            'max' => 100,
+//                        ],
+//                    ],
+//                    [
+//                        'name' => UniqueEmailValidator::class,
+//                        'options' => [
+//                            'userTable' => $userTable
+//                        ],
+//                    ],
+//                ],
             ]));
 
             $inputFilter->add($factory->createInput([

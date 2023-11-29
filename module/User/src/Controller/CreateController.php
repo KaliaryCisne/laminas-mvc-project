@@ -6,14 +6,14 @@ namespace User\Controller;
 
 
 use Laminas\Session\Container as SessionContainer;
-use User\Form\User as UserForm;
+use User\Form\UserForm as UserForm;
 use User\Model\User;
 
 class CreateController extends BaseController
 {
     public function indexAction()
     {
-        $user = $this->table->getModel(null);
+        $user = $this->table->getModelById(null);
         $form = new UserForm();
         $form->get('submit')->setValue('Salvar');
         $sessionContainer = new SessionContainer();
@@ -31,11 +31,11 @@ class CreateController extends BaseController
     {
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form = new UserForm();
-            $user = new User();
-            $form->setInputFilter($user->getInputFilter($this->table));
             $post = $request->getPost();
+            $form = new UserForm();
             $form->setData($post);
+            $user = new User();
+            $form->setInputFilter($user->getInputFilter($this->table, $post, null));
             if (!$form->isValid()) {
                 $sessionContainer = new SessionContainer();
                 $sessionContainer->model = $post;

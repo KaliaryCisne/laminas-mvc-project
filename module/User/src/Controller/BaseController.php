@@ -11,7 +11,7 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Session\Container as SessionContainer;
 use Laminas\Session\SessionManager;
-use User\Form\User as UserForm;
+use User\Form\UserForm as UserForm;
 use User\Model\User;
 use User\Model\UserTable;
 

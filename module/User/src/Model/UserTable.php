@@ -38,10 +38,25 @@ class UserTable
      * @param $keyValue
      * @return User
      */
-    public function	getModel($keyValue)
+    public function	getModelById($keyValue)
     {
         $rowset	= $this->tableGateway->select([
             $this->keyName => $keyValue
+        ]);
+
+        if ($rowset->count() > 0) {
+            $row = $rowset->current();
+        } else {
+            $row = new User();
+        }
+
+        return $row;
+    }
+
+    public function	getModelByEmail($email)
+    {
+        $rowset	= $this->tableGateway->select([
+            'email' => $email
         ]);
 
         if ($rowset->count() > 0) {
@@ -58,6 +73,7 @@ class UserTable
      */
     public function saveModel(User $user)
     {
+        $user->password = password_hash($user->password, PASSWORD_BCRYPT);
         $data = [
             'name' => $user->name,
             'email' => $user->email,

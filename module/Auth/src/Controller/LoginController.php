@@ -6,6 +6,7 @@ use Auth\Form\LoginForm;
 use Auth\Service\AuthService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use User\Model\UserTable;
 
 class LoginController extends AbstractActionController
 {
