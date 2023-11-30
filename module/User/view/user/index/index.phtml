@@ -3,15 +3,30 @@ $title = "Usuários ";
 $this->headTitle($title);
 ?>
 <h1><?=$this->escapeHtml($title)?></h1>
-<p>
-    <a href="<?= $this->url(
-        'user',
-        [
-            'action' => 'index',
-            'controller' => 'create'
-        ])
-        ?>">Novo usuário</a>
-</p>
+
+
+<div class="justify-content-between" style="display: flex">
+    <div class="mb-2">
+        <a
+        href="<?= $this->url(
+            'user',
+            [
+                'action' => 'index',
+                'controller' => 'create'
+            ])?>"
+        class="btn btn-primary my-2 my-sm-0"
+        type="button"
+        >Adicionar</a>
+    </div>
+
+    <div class="" style="width: 80%">
+        <?php
+        $form = $this->form;
+        $form->prepare();
+        echo $this->form($form);
+        ?>
+    </div>
+</div>
 
 <table class="table">
     <tr>

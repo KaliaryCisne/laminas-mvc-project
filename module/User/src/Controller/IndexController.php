@@ -9,6 +9,8 @@ use Laminas\Http\Response;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
+use User\Form\SearchForm;
+use User\Model\UserTable;
 
 class IndexController extends AbstractActionController
 {
@@ -16,7 +18,7 @@ class IndexController extends AbstractActionController
 
     private $authService;
 
-    public function __construct($table, $sessionManager, AuthService $authService)
+    public function __construct(UserTable $table, $sessionManager, AuthService $authService)
     {
         $this->table = $table;
         $this->authService = $authService;
@@ -34,8 +36,19 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
+        $form = new SearchForm();
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $post = $request->getPost();
+            $name = $post['name'];
+            $models = $this->table->getModelByName($name);
+        } else {
+            $models = $this->table->fetchAll();
+        }
+
         return new ViewModel([
-            'models' => $this->table->fetchAll()
+            'models' => $models,
+            'form' => $form
         ]);
     }
 }

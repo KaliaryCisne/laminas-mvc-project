@@ -33,7 +33,6 @@ return [
         'aliases' => [
             'create' => Controller\CreateController::class,
             'delete' => Controller\DeleteController::class,
-            'search' => Controller\SearchController::class,
             'update' => Controller\UpdateController::class,
         ],
         'factories' => [
@@ -54,13 +53,6 @@ return [
                 $sessionManager = new SessionManager();
                 $authService = $sm->get(AuthService::class);
                 return new Controller\IndexController($table, $sessionManager, $authService);
-            },
-            Controller\SearchController::class => function($sm) {
-                $table = $sm->get(UserTable::class);
-                $sesionManager = new SessionManager();
-                $authAdapter = $sm->get(DbTableAuthAdapter::class);
-                $authService = new AuthService($authAdapter);
-                return new Controller\SearchController($table, $sesionManager, $authService);
             },
             Controller\UpdateController::class => function($sm) {
                 $table = $sm->get(UserTable::class);

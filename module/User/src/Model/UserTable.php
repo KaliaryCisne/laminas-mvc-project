@@ -2,6 +2,8 @@
 
 namespace User\Model;
 
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 
@@ -66,6 +68,22 @@ class UserTable
         }
 
         return $row;
+    }
+
+    public function	getModelByName($name)
+    {
+        $name = strtolower($name);
+        $result	= $this->tableGateway->select(function (Select $select) use($name) {
+            $where = new Where();
+            $where->like('name', '%' . $name . '%');
+            $select->where($where);
+        });
+
+        if ($result->count() > 0) {
+            return $result;
+        }
+
+        return [];
     }
 
     /**
