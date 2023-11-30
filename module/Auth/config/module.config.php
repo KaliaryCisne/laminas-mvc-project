@@ -13,6 +13,16 @@ use User\Model\UserTable;
 return [
     'router' => [
         'routes' => [
+            '' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/',
+                    'defaults' => [
+                        'controller' => Controller\LoginController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
             'login' => [
                 'type'    => Literal::class,
                 'options' => [
